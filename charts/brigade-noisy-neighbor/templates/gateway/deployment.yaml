@@ -33,6 +33,8 @@ spec:
               key: api-token
         - name: API_IGNORE_CERT_WARNINGS
           value: {{ quote .Values.gateway.brigade.apiIgnoreCertWarnings }}
+        - name: NOISE_DURATION
+          value: {{ quote .Values.gateway.brigade.noiseDuration }}
       {{- with .Values.gateway.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -23,7 +23,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		scrapeInterval, err := scrapeDuration()
+		scrapeInterval, err := noiseDuration()
 		if err != nil {
 			log.Fatal(err)
 		}

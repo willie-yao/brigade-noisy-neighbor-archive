@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/brigadecore/brigade/sdk/v2"
+	"github.com/brigadecore/brigade/sdk/v2/core"
 )
 
 type noisyNeighbor struct {
@@ -23,19 +24,27 @@ func newNoisyNeighbor(
 	}
 }
 
-func (m *noisyNeighbor) run(ctx context.Context) {
-	ticker := time.NewTicker(m.noiseInterval)
+func (n *noisyNeighbor) run(ctx context.Context) {
+	log.Println("Running noisy neighbor")
+	ticker := time.NewTicker(n.noiseInterval)
 	defer ticker.Stop()
 	for {
 		select {
 		case <-ticker.C:
-			m.createEvents()
+			n.createEvents(ctx)
 		case <-ctx.Done():
 			return
 		}
 	}
 }
 
-func (m *noisyNeighbor) createEvents() {
-	log.Println("Hello")
+func (n *noisyNeighbor) createEvents(ctx context.Context) {
+	event := core.Event{
+		Source: "brigade.sh/cli",
+		Type:   "exec",
+	}
+	n.apiClient.Core().Events().Create(
+		ctx,
+		event,
+	)
 }
