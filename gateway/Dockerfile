@@ -11,7 +11,7 @@ COPY go.sum go.sum
 
 RUN go build \
   -o bin/gateway \
-  -ldflags "-w -X github.com/brigadecore/brigade-noisy-neighbor/gateway/internal/version.version=$VERSION -X github.com/brigadecore/brigade-noisy-neighbor/gateway/internal/version.commit=$COMMIT" \
+  -ldflags "-w -X github.com/willie-yao/brigade-noisy-neighbor/gateway/internal/version.version=$VERSION -X github.com/willie-yao/brigade-noisy-neighbor/gateway/internal/version.commit=$COMMIT" \
   ./gateway
 
 EXPOSE 8080

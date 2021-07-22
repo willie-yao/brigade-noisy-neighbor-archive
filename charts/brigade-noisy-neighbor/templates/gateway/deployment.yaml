@@ -33,8 +33,6 @@ spec:
               key: api-token
         - name: API_IGNORE_CERT_WARNINGS
           value: {{ quote .Values.gateway.brigade.apiIgnoreCertWarnings }}
-        - name: PROM_SCRAPE_INTERVAL
-          value: {{ quote .Values.prometheus.scrapeInterval }}
       {{- with .Values.gateway.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/brigadecore/brigade/sdk/v2"
@@ -36,5 +37,5 @@ func (m *noisyNeighbor) run(ctx context.Context) {
 }
 
 func (m *noisyNeighbor) createEvents() {
-
+	log.Println("Hello")
 }

@@ -1,4 +1,4 @@
-module github.com/brigadecore/brigade-noisy-neighbor
+module github.com/willie-yao/brigade-noisy-neighbor
 
 go 1.16
 

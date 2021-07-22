@@ -171,7 +171,7 @@ publish-chart:
 	'
 
 ################################################################################
-# Targets to facilitate hacking on Brigade Prometheus.                         #
+# Targets to facilitate hacking on Brigade Noisy Neighbor.                     #
 ################################################################################
 
 .PHONY: hack-new-kind-cluster
@@ -207,7 +207,7 @@ hack-deploy:
 		--create-namespace \
 		--namespace brigade-noisy-neighbor \
 		--wait \
-		--timeout 30s \
+		--timeout 60s \
 		--set gateway.image.repository=$(DOCKER_IMAGE_PREFIX)gateway \
 		--set gateway.image.tag=$(IMMUTABLE_DOCKER_TAG) \
 		--set gateway.image.pullPolicy=$(IMAGE_PULL_POLICY) \

@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/brigadecore/brigade-noisy-neighbor/gateway/internal/file"
 	"github.com/pkg/errors"
+	"github.com/willie-yao/brigade-noisy-neighbor/gateway/internal/file"
 )
 
 // ServerConfig represents optional configuration for an HTTP/S server.

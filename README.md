@@ -1,4 +1,4 @@
-# Brigade Noisy Neighbor: One-Step Monitoring for Brigade 2
+# Brigade Noisy Neighbor
 
 The purpose of Brigade Noisy Neighbor is to act as a "Noisy Neighbor" and test
 the limits of the Brigade 2 dogfood cluster.

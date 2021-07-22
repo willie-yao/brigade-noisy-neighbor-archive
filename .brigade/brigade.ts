@@ -75,17 +75,6 @@ const pushgatewayJob = (event: Event) => {
 }
 jobs[pushgatewayJobName] = pushgatewayJob
 
-const buildGrafanaJobName = "build-grafana"
-const buildGrafanaJob = (event: Event) => {
-  return new MakeTargetJob(buildGrafanaJobName, kanikoImg, event)
-}
-jobs[buildGrafanaJobName] = buildGrafanaJob
-
-const pushGrafanaJobName = "push-grafana"
-const pushGrafanaJob = (event: Event) => {
-  return new PushImageJob(pushGrafanaJobName, event)
-}
-jobs[pushGrafanaJobName] = pushGrafanaJob
 
 const publishChartJobName = "publish-chart"
 const publishChartJob = (event: Event) => {
@@ -109,8 +98,7 @@ async function runSuite(event: Event): Promise<void> {
       lintChartJob(event)
     ),
     new ConcurrentGroup( // Build everything
-      buildgatewayJob(event),
-      buildGrafanaJob(event)
+      buildgatewayJob(event)
     )
   ).run()
   if (event.worker?.git?.ref == "master") {
@@ -122,8 +110,7 @@ async function runSuite(event: Event): Promise<void> {
     // To keep our github released page tidy, we're also not publishing "edge"
     // CLI binaries.
     await new ConcurrentGroup(
-      pushgatewayJob(event),
-      pushGrafanaJob(event)
+      pushgatewayJob(event)
     ).run()
   }
 }
@@ -157,8 +144,7 @@ events.on("brigade.sh/github", "push", async event => {
     // This is an official release with a semantically versioned tag
     await new SerialGroup(
       new ConcurrentGroup(
-        pushgatewayJob(event),
-        pushGrafanaJob(event)
+        pushgatewayJob(event)
       ),
       publishChartJob(event)
     ).run()
