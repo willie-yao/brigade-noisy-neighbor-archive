@@ -6,7 +6,7 @@ metadata:
 description: Noisy neighbor for Brigade 2!
 spec:
   eventSubscriptions:
-  - source: brigade.sh/github
+  - source: https://github.com/willie-yao/brigade-noisy-neighbor/
     qualifiers:
       repo: willie-yao/brigade-noisy-neighbor
     types:

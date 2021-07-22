@@ -27,7 +27,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		go newNoisyNeighbor(
+		newNoisyNeighbor(
 			sdk.NewAPIClient(address, token, &opts),
 			time.Duration(scrapeInterval),
 		).run(ctx)

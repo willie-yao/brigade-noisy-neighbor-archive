@@ -25,26 +25,27 @@ func newNoisyNeighbor(
 }
 
 func (n *noisyNeighbor) run(ctx context.Context) {
-	log.Println("Running noisy neighbor")
 	ticker := time.NewTicker(n.noiseInterval)
 	defer ticker.Stop()
 	for {
 		select {
 		case <-ticker.C:
-			n.createEvents(ctx)
+			n.createEvent(ctx)
 		case <-ctx.Done():
 			return
 		}
 	}
 }
 
-func (n *noisyNeighbor) createEvents(ctx context.Context) {
-	event := core.Event{
-		Source: "brigade.sh/cli",
-		Type:   "exec",
-	}
-	n.apiClient.Core().Events().Create(
+func (n *noisyNeighbor) createEvent(ctx context.Context) {
+	_, err := n.apiClient.Core().Events().Create(
 		ctx,
-		event,
+		core.Event{
+			Source: "https://github.com/willie-yao/brigade-noisy-neighbor/",
+			Type:   "noise",
+		},
 	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
