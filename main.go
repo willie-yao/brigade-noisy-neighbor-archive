@@ -7,7 +7,6 @@ import (
 
 	"github.com/brigadecore/brigade/sdk/v2"
 	"github.com/brigadecore/brigade/sdk/v2/core"
-	"github.com/willie-yao/brigade-noisy-neighbor/internal/signals"
 	"github.com/willie-yao/brigade-noisy-neighbor/internal/version"
 )
 
@@ -17,8 +16,6 @@ func main() {
 		version.Version(),
 		version.Commit(),
 	)
-
-	ctx := signals.Context()
 
 	address, token, opts, err := apiClientConfig()
 	if err != nil {
@@ -34,30 +31,16 @@ func main() {
 
 	ticker := time.NewTicker(noiseFrequency)
 	defer ticker.Stop()
-	for {
-		select {
-		case <-ticker.C:
-			err := createEvent(ctx, apiClient)
-			if err != nil {
-				log.Println(err)
-			}
-		case <-ctx.Done():
-			return
+	for range ticker.C {
+		if _, err := apiClient.Core().Events().Create(
+			context.Background(),
+			core.Event{
+				Source: "github.com/willie-yao/brigade-noisy-neighbor",
+				Type:   "noise",
+			},
+		); err != nil {
+			log.Println(err)
 		}
 	}
 
-}
-
-func createEvent(ctx context.Context, apiClient sdk.APIClient) error {
-	_, err := apiClient.Core().Events().Create(
-		ctx,
-		core.Event{
-			Source: "github.com/willie-yao/brigade-noisy-neighbor",
-			Type:   "noise",
-		},
-	)
-	if err != nil {
-		return err
-	}
-	return nil
 }
