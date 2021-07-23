@@ -24,6 +24,6 @@ func apiClientConfig() (string, string, restmachinery.APIClientOptions, error) {
 	return address, token, opts, err
 }
 
-func scrapeDuration() (time.Duration, error) {
-	return os.GetDurationFromEnvVar("PROM_SCRAPE_INTERVAL", 5*time.Second)
+func noiseFrequency() (time.Duration, error) {
+	return os.GetDurationFromEnvVar("NOISE_FREQUENCY", 5*time.Second)
 }

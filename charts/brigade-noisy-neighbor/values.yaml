@@ -21,6 +21,7 @@ gateway:
     apiToken: <placeholder>
     ## Whether to ignore cert warning from the API server
     apiIgnoreCertWarnings: true
+    noiseFrequency: 5s
 
   resources: {}
     # We usually recommend not to specify default resources and to leave this as
