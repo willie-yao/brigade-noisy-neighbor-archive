@@ -6,7 +6,7 @@ type: application
 version: 0.1.0
 appVersion: v0.1.0
 sources:
-- https://github.com/willie-yao/brigade-noisy-neighbor
+- https://github.com/brigadecore/brigade-noisy-neighbor
 maintainers:
 - name: The Brigade Maintainers
   email: cncf-brigade-maintainers@lists.cncf.io

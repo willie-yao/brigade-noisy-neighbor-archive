@@ -37,12 +37,12 @@ required in subsequent steps and cannot be retrieved later through any other
 means.
 
 Now grant the service account permission to create events from the
-`github.com/willie-yao/brigade-noisy-neigbor` source:
+`github.com/brigadecore/brigade-noisy-neigbor` source:
 
 ```console
 $ brig role grant EVENT_CREATOR
   --service-account brigade-noisy-neighbor \
-  --source github.com/willie-yao/brigade-noisy-neigbor
+  --source github.com/brigadecore/brigade-noisy-neigbor
 ```
 
 ### Installing Brigade Noisy Neighbor
@@ -109,7 +109,7 @@ metadata:
 description: Noisy Ned subscribes to events from the Brigade Noisy Neighbor!
 spec:
   eventSubscriptions:
-  - source: brigade.sh/willie-yao/brigade-noisy-neighbor
+  - source: brigade.sh/brigadecore/brigade-noisy-neighbor
     types:
     - noise
   workerTemplate:
@@ -117,7 +117,7 @@ spec:
       brigade.js: | 
         const { events, Job } = require("@brigadecore/brigadier");
 
-        events.on("brigade.sh/willie-yao/brigade-noisy-neighbor", "noise", async event => {
+        events.on("brigade.sh/brigadecore/brigade-noisy-neighbor", "noise", async event => {
           let job = new Job("sleep", "debian:latest", event);
           job.primaryContainer.command = ["sleep"];
           job.primaryContainer.arguments = ["5"];
@@ -150,4 +150,4 @@ We have a slack channel!
 [Kubernetes/#brigade](https://kubernetes.slack.com/messages/C87MF1RFD) Feel free
 to join for any support questions or feedback, we are happy to help. To report
 an issue or to request a feature open an issue
-[here](https://github.com/willie-yao/brigade-noisy-neighbor/issues)
+[here](https://github.com/brigadecore/brigade-noisy-neighbor/issues)

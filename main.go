@@ -5,9 +5,9 @@ import (
 	"log"
 	"time"
 
+	"github.com/brigadecore/brigade-noisy-neighbor/internal/version"
 	"github.com/brigadecore/brigade/sdk/v2"
 	"github.com/brigadecore/brigade/sdk/v2/core"
-	"github.com/willie-yao/brigade-noisy-neighbor/internal/version"
 )
 
 func main() {
@@ -35,7 +35,7 @@ func main() {
 		if _, err := apiClient.Core().Events().Create(
 			context.Background(),
 			core.Event{
-				Source: "github.com/willie-yao/brigade-noisy-neighbor",
+				Source: "github.com/brigadecore/brigade-noisy-neighbor",
 				Type:   "noise",
 			},
 		); err != nil {
