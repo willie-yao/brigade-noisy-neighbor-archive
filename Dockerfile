@@ -10,12 +10,10 @@ COPY go.mod go.mod
 COPY go.sum go.sum
 
 RUN go build \
-  -o bin/gateway \
+  -o bin/noisy-neighbor \
   -ldflags "-w -X github.com/willie-yao/brigade-noisy-neighbor/internal/version.version=$VERSION -X github.com/willie-yao/brigade-noisy-neighbor/internal/version.commit=$COMMIT" \
   .
 
-EXPOSE 8080
-
 FROM scratch
 COPY --from=0 /bin/ /brigade-noisy-neighbor/bin/
-ENTRYPOINT ["/brigade-noisy-neighbor/bin/gateway"]
+ENTRYPOINT ["/brigade-noisy-neighbor/bin/noisy-neighbor"]
