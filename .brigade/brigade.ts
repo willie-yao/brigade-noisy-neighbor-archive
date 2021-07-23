@@ -63,18 +63,17 @@ jobs[lintChartJobName] = lintChartJob
 
 // Build / publish stuff:
 
-const buildgatewayJobName = "build-gateway"
-const buildgatewayJob = (event: Event) => {
-  return new MakeTargetJob(buildgatewayJobName, kanikoImg, event)
+const buildJobName = "build"
+const buildJob = (event: Event) => {
+  return new MakeTargetJob(buildJobName, kanikoImg, event)
 }
-jobs[buildgatewayJobName] = buildgatewayJob
+jobs[buildJobName] = buildJob
 
-const pushgatewayJobName = "push-gateway"
-const pushgatewayJob = (event: Event) => {
-  return new PushImageJob(pushgatewayJobName, event)
+const pushJobName = "push"
+const pushJob = (event: Event) => {
+  return new PushImageJob(pushJobName, event)
 }
-jobs[pushgatewayJobName] = pushgatewayJob
-
+jobs[pushJobName] = pushJob
 
 const publishChartJobName = "publish-chart"
 const publishChartJob = (event: Event) => {
@@ -88,8 +87,8 @@ const publishChartJob = (event: Event) => {
 jobs[publishChartJobName] = publishChartJob
 
 // Run the entire suite of tests WITHOUT publishing anything initially. If
-// EVERYTHING passes AND this was a push (merge, presumably) to the v2 branch,
-// then run jobs to publish "edge" images.
+// EVERYTHING passes AND this was a push (merge, presumably) to the master
+// branch, then publish an "edge" image.
 async function runSuite(event: Event): Promise<void> {
   await new SerialGroup(
     new ConcurrentGroup( // Basic tests
@@ -97,9 +96,7 @@ async function runSuite(event: Event): Promise<void> {
       lintJob(event),
       lintChartJob(event)
     ),
-    new ConcurrentGroup( // Build everything
-      buildgatewayJob(event)
-    )
+    buildJob(event)
   ).run()
   if (event.worker?.git?.ref == "master") {
     // Push "edge" images.
@@ -109,9 +106,7 @@ async function runSuite(event: Event): Promise<void> {
     //
     // To keep our github released page tidy, we're also not publishing "edge"
     // CLI binaries.
-    await new ConcurrentGroup(
-      pushgatewayJob(event)
-    ).run()
+    await pushJob(event).run()
   }
 }
 
@@ -143,9 +138,7 @@ events.on("brigade.sh/github", "push", async event => {
   if (matchStr) {
     // This is an official release with a semantically versioned tag
     await new SerialGroup(
-      new ConcurrentGroup(
-        pushgatewayJob(event)
-      ),
+      pushJob(event),
       publishChartJob(event)
     ).run()
   } else {

@@ -63,7 +63,7 @@ ifdef DOCKER_ORG
 	DOCKER_ORG := $(DOCKER_ORG)/
 endif
 
-DOCKER_IMAGE_PREFIX := $(DOCKER_REGISTRY)$(DOCKER_ORG)brigade-noisy-neighbor-
+DOCKER_IMAGE_NAME := $(DOCKER_REGISTRY)$(DOCKER_ORG)brigade-noisy-neighbor
 
 ifdef HELM_REGISTRY
 	HELM_REGISTRY := $(HELM_REGISTRY)/
@@ -73,7 +73,7 @@ ifdef HELM_ORG
 	HELM_ORG := $(HELM_ORG)/
 endif
 
-HELM_CHART_PREFIX := $(HELM_REGISTRY)$(HELM_ORG)
+HELM_CHART_NAME := $(HELM_REGISTRY)$(HELM_ORG)brigade-noisy-neighbor
 
 ifdef VERSION
 	MUTABLE_DOCKER_TAG := latest
@@ -121,17 +121,11 @@ lint-chart:
 ################################################################################
 
 .PHONY: build
-build: build-images
-
-.PHONY: build-images
-build-images: build-gateway
-
-.PHONY: build-%
-build-%:
+build:
 	$(KANIKO_DOCKER_CMD) kaniko \
 		--build-arg VERSION=$(VERSION) \
 		--build-arg COMMIT=$(GIT_VERSION) \
-		--dockerfile /workspaces/brigade-noisy-neighbor/$*/Dockerfile \
+		--dockerfile /workspaces/brigade-noisy-neighbor/gateway/Dockerfile \
 		--context dir:///workspaces/brigade-noisy-neighbor/ \
 		--no-push
 
@@ -140,22 +134,19 @@ build-%:
 ################################################################################
 
 .PHONY: publish
-publish: push-images publish-chart
+publish: push publish-chart
 
-.PHONY: push-images
-push-images: push-gateway
-
-.PHONY: push-%
-push-%:
+.PHONY: push
+push:
 	$(KANIKO_DOCKER_CMD) sh -c ' \
 		docker login $(DOCKER_REGISTRY) -u $(DOCKER_USERNAME) -p $${DOCKER_PASSWORD} && \
 		kaniko \
 			--build-arg VERSION="$(VERSION)" \
 			--build-arg COMMIT="$(GIT_VERSION)" \
-			--dockerfile /workspaces/brigade-noisy-neighbor/$*/Dockerfile \
+			--dockerfile /workspaces/brigade-noisy-neighbor/gateway/Dockerfile \
 			--context dir:///workspaces/brigade-noisy-neighbor/ \
-			--destination $(DOCKER_IMAGE_PREFIX)$*:$(IMMUTABLE_DOCKER_TAG) \
-			--destination $(DOCKER_IMAGE_PREFIX)$*:$(MUTABLE_DOCKER_TAG) \
+			--destination $(DOCKER_IMAGE_NAME):$(IMMUTABLE_DOCKER_TAG) \
+			--destination $(DOCKER_IMAGE_NAME):$(MUTABLE_DOCKER_TAG) \
 	'
 
 .PHONY: publish-chart
@@ -166,36 +157,26 @@ publish-chart:
 		helm dep up && \
 		sed -i "s/^version:.*/version: $(VERSION)/" Chart.yaml && \
 		sed -i "s/^appVersion:.*/appVersion: $(VERSION)/" Chart.yaml && \
-		helm chart save . $(HELM_CHART_PREFIX)brigade-noisy-neighbor:$(VERSION) && \
-		helm chart push $(HELM_CHART_PREFIX)brigade-noisy-neighbor:$(VERSION) \
+		helm chart save . $(HELM_CHART_NAME):$(VERSION) && \
+		helm chart push $(HELM_CHART_NAME):$(VERSION) \
 	'
 
 ################################################################################
 # Targets to facilitate hacking on Brigade Noisy Neighbor.                     #
 ################################################################################
 
-.PHONY: hack-new-kind-cluster
-hack-new-kind-cluster:
-	hack/kind/new-cluster.sh
-
-.PHONY: hack-build-images
-hack-build-images: hack-build-gateway
-
-.PHONY: hack-build-%
-hack-build-%:
+.PHONY: hack-build
+hack-build:
 	docker build \
-		-f $*/Dockerfile \
-		-t $(DOCKER_IMAGE_PREFIX)$*:$(VERSION) \
+		-f gateway/Dockerfile \
+		-t $(DOCKER_IMAGE_NAME):$(VERSION) \
 		--build-arg VERSION='$(VERSION)' \
 		--build-arg COMMIT='$(GIT_VERSION)' \
 		.
 
-.PHONY: hack-push-images
-hack-push-images: hack-push-gateway
-
-.PHONY: hack-push-%
-hack-push-%: hack-build-%
-	docker push $(DOCKER_IMAGE_PREFIX)$*:$(IMMUTABLE_DOCKER_TAG)
+.PHONY: hack-push
+hack-push: hack-build
+	docker push $(DOCKER_IMAGE_NAME):$(IMMUTABLE_DOCKER_TAG)
 
 IMAGE_PULL_POLICY ?= Always
 
@@ -208,18 +189,16 @@ hack-deploy:
 		--namespace brigade-noisy-neighbor \
 		--wait \
 		--timeout 60s \
-		--set image.repository=$(DOCKER_IMAGE_PREFIX)gateway \
+		--set image.repository=$(DOCKER_IMAGE_NAME) \
 		--set image.tag=$(IMMUTABLE_DOCKER_TAG) \
 		--set image.pullPolicy=$(IMAGE_PULL_POLICY)
 
 .PHONY: hack
-hack: hack-push-images hack-deploy
+hack: hack-push hack-deploy
 
-# Convenience targets for loading images into a KinD cluster
-.PHONY: hack-load-images
-hack-load-images: load-gateway
-
-load-%:
-	@echo "Loading $(DOCKER_IMAGE_PREFIX)$*:$(IMMUTABLE_DOCKER_TAG)"
-	@kind load docker-image $(DOCKER_IMAGE_PREFIX)$*:$(IMMUTABLE_DOCKER_TAG) \
-			|| echo >&2 "kind not installed or error loading image: $(DOCKER_IMAGE_PREFIX)$*:$(IMMUTABLE_DOCKER_TAG)"
+# Convenience target for loading image into a KinD cluster
+.PHONY: hack-load-image
+hack-load-image:
+	@echo "Loading $(DOCKER_IMAGE_NAME):$(IMMUTABLE_DOCKER_TAG)"
+	@kind load docker-image $(DOCKER_IMAGE_NAME):$(IMMUTABLE_DOCKER_TAG) \
+			|| echo >&2 "kind not installed or error loading image: $(DOCKER_IMAGE_NAME):$(IMMUTABLE_DOCKER_TAG)"
