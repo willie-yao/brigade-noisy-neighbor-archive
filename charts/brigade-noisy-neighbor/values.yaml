@@ -2,46 +2,38 @@
 ## This is a YAML-formatted file.
 ## Declare variables to be passed into your templates.
 
-## All settings for the gateway
-gateway:
+image:
+  repository: quillie/brigade-noisy-neighbor-gateway
+  ## tag should only be specified if you want to override Chart.appVersion
+  ## The default tag is the value of .Chart.AppVersion
+  # tag:
+  pullPolicy: IfNotPresent
 
-  image:
-    repository: quillie/brigade-noisy-neighbor-gateway
-    ## tag should only be specified if you want to override Chart.appVersion
-    ## The default tag is the value of .Chart.AppVersion
-    # tag:
-    pullPolicy: IfNotPresent
+## Settings related to connecting to the Brigade API server
+brigade:
+  ## Address of your Brigade 2 API server, including leading protocol
+  ## (http:// or https://)
+  apiAddress: https://brigade-apiserver.brigade.svc.cluster.local
+  ## API token belonging to a Brigade 2 service account
+  apiToken: 5e0a44265e6b4867a7c3535ef2f01b54E8YF8RtFk7psuAAOaOMKqbWnlJYBThFSz0n9ahLPqeIGeJzoRTmqLGpApQojAZz0Tvy8tpb1aPcwdAuUdbP41YyJxfioHx4fW9qEaRpdrloWPI5DboOtN5hXj3Ja1e3UkQOGlpVbPFUgopGgtXFYMjZW9ROw89r9JWEtMauwxmkacbVQrRqHbQwBWrCsra79zdBZEfMBriWdAcO0MRKe8Kd8k8LA9AON
+  ## Whether to ignore cert warning from the API server
+  apiIgnoreCertWarnings: true
 
-  ## Settings related to connecting to the Brigade API server
-  brigade:
-    ## Address of your Brigade 2 API server, including leading protocol
-    ## (http:// or https://)
-    apiAddress: https://brigade-apiserver.brigade.svc.cluster.local
-    ## API token belonging to a Brigade 2 service account
-    apiToken: <placeholder>
-    ## Whether to ignore cert warning from the API server
-    apiIgnoreCertWarnings: true
-    noiseFrequency: 5s
+noiseFrequency: 5s
 
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as
-    # a conscious choice for the user. This also increases chances charts run on
-    # environments with little resources, such as Minikube. If you do want to
-    # specify resources, uncomment the following lines, adjust them as
-    # necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as
+  # a conscious choice for the user. This also increases chances charts run on
+  # environments with little resources, such as Minikube. If you do want to
+  # specify resources, uncomment the following lines, adjust them as
+  # necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
 
-  nodeSelector: {}
+nodeSelector: {}
 
-  tolerations: []
-
-  service:
-    type: ClusterIP
-    ## Host port the service will be mapped to when service type is either
-    ## NodePort or LoadBalancer. If not specified, Kubernetes chooses.
-    # nodePort: 31700
+tolerations: []

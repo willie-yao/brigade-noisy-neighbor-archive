@@ -208,9 +208,9 @@ hack-deploy:
 		--namespace brigade-noisy-neighbor \
 		--wait \
 		--timeout 60s \
-		--set gateway.image.repository=$(DOCKER_IMAGE_PREFIX)gateway \
-		--set gateway.image.tag=$(IMMUTABLE_DOCKER_TAG) \
-		--set gateway.image.pullPolicy=$(IMAGE_PULL_POLICY) \
+		--set image.repository=$(DOCKER_IMAGE_PREFIX)gateway \
+		--set image.tag=$(IMMUTABLE_DOCKER_TAG) \
+		--set image.pullPolicy=$(IMAGE_PULL_POLICY)
 
 .PHONY: hack
 hack: hack-push-images hack-deploy
