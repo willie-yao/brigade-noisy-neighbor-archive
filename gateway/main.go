@@ -27,17 +27,20 @@ func main() {
 
 	apiClient := sdk.NewAPIClient(address, token, &opts)
 
-	noiseInterval, err := noiseFrequency()
+	noiseFrequency, err := noiseFrequency()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	ticker := time.NewTicker(noiseInterval)
+	ticker := time.NewTicker(noiseFrequency)
 	defer ticker.Stop()
 	for {
 		select {
 		case <-ticker.C:
-			createEvent(apiClient, ctx)
+			err := createEvent(apiClient, ctx)
+			if err != nil {
+				log.Println(err)
+			}
 		case <-ctx.Done():
 			return
 		}
@@ -45,7 +48,7 @@ func main() {
 
 }
 
-func createEvent(apiClient sdk.APIClient, ctx context.Context) {
+func createEvent(apiClient sdk.APIClient, ctx context.Context) error {
 	_, err := apiClient.Core().Events().Create(
 		ctx,
 		core.Event{
@@ -54,6 +57,7 @@ func createEvent(apiClient sdk.APIClient, ctx context.Context) {
 		},
 	)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
