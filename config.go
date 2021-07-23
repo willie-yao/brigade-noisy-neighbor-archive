@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/brigadecore/brigade/sdk/v2/restmachinery"
-	"github.com/willie-yao/brigade-noisy-neighbor/gateway/internal/os"
+	"github.com/willie-yao/brigade-noisy-neighbor/internal/os"
 )
 
 // apiClientConfig populates the Brigade SDK's APIClientOptions from

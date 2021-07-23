@@ -7,8 +7,8 @@ import (
 
 	"github.com/brigadecore/brigade/sdk/v2"
 	"github.com/brigadecore/brigade/sdk/v2/core"
-	"github.com/willie-yao/brigade-noisy-neighbor/gateway/internal/signals"
-	"github.com/willie-yao/brigade-noisy-neighbor/gateway/internal/version"
+	"github.com/willie-yao/brigade-noisy-neighbor/internal/signals"
+	"github.com/willie-yao/brigade-noisy-neighbor/internal/version"
 )
 
 func main() {
