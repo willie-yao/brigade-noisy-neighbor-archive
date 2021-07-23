@@ -91,7 +91,7 @@ IMMUTABLE_DOCKER_TAG := $(VERSION)
 .PHONY: lint
 lint:
 	$(GO_DOCKER_CMD) sh -c ' \
-		golangci-lint run --config ../golangci.yaml \
+		golangci-lint run --config golangci.yaml \
 	'
 
 .PHONY: test-unit

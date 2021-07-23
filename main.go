@@ -37,7 +37,7 @@ func main() {
 	for {
 		select {
 		case <-ticker.C:
-			err := createEvent(apiClient, ctx)
+			err := createEvent(ctx, apiClient)
 			if err != nil {
 				log.Println(err)
 			}
@@ -48,7 +48,7 @@ func main() {
 
 }
 
-func createEvent(apiClient sdk.APIClient, ctx context.Context) error {
+func createEvent(ctx context.Context, apiClient sdk.APIClient) error {
 	_, err := apiClient.Core().Events().Create(
 		ctx,
 		core.Event{
