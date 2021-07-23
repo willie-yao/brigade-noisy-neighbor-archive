@@ -91,14 +91,12 @@ IMMUTABLE_DOCKER_TAG := $(VERSION)
 .PHONY: lint
 lint:
 	$(GO_DOCKER_CMD) sh -c ' \
-		cd gateway && \
 		golangci-lint run --config ../golangci.yaml \
 	'
 
 .PHONY: test-unit
 test-unit:
 	$(GO_DOCKER_CMD) sh -c ' \
-		cd gateway && \
 		go test \
 			-v \
 			-timeout=60s \
@@ -125,7 +123,7 @@ build:
 	$(KANIKO_DOCKER_CMD) kaniko \
 		--build-arg VERSION=$(VERSION) \
 		--build-arg COMMIT=$(GIT_VERSION) \
-		--dockerfile /workspaces/brigade-noisy-neighbor/gateway/Dockerfile \
+		--dockerfile /workspaces/brigade-noisy-neighbor/Dockerfile \
 		--context dir:///workspaces/brigade-noisy-neighbor/ \
 		--no-push
 
@@ -143,7 +141,7 @@ push:
 		kaniko \
 			--build-arg VERSION="$(VERSION)" \
 			--build-arg COMMIT="$(GIT_VERSION)" \
-			--dockerfile /workspaces/brigade-noisy-neighbor/gateway/Dockerfile \
+			--dockerfile /workspaces/brigade-noisy-neighbor/Dockerfile \
 			--context dir:///workspaces/brigade-noisy-neighbor/ \
 			--destination $(DOCKER_IMAGE_NAME):$(IMMUTABLE_DOCKER_TAG) \
 			--destination $(DOCKER_IMAGE_NAME):$(MUTABLE_DOCKER_TAG) \
@@ -168,7 +166,7 @@ publish-chart:
 .PHONY: hack-build
 hack-build:
 	docker build \
-		-f gateway/Dockerfile \
+		-f Dockerfile \
 		-t $(DOCKER_IMAGE_NAME):$(VERSION) \
 		--build-arg VERSION='$(VERSION)' \
 		--build-arg COMMIT='$(GIT_VERSION)' \
