@@ -8,7 +8,7 @@ spec:
   eventSubscriptions:
   - source: brigade.sh/github
     qualifiers:
-      repo: willie-yao/brigade-noisy-neighbor
+      repo: brigadecore/brigade-noisy-neighbor
     types:
     - check_run:rerequested
     - check_suite:requested
@@ -16,4 +16,4 @@ spec:
     - push
   workerTemplate:
     git:
-      cloneURL: https://github.com/willie-yao/brigade-noisy-neighbor.git
+      cloneURL: https://github.com/brigadecore/brigade-noisy-neighbor.git
